@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard de Licitaciones{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Título y Resumen -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="row">
+        <!-- Licitaciones Totales -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Licitaciones Totales</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_licitaciones }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-file-text fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proveedores -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Proveedores Registrados</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_proveedores }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-people fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ofertas -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total de Ofertas
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ stats.total_ofertas }}</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar"
+                                            style="width: {{ (stats.promedio_ofertas / 10) * 100 }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Licitaciones Activas -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Licitaciones Activas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.licitaciones_activas }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-clock-history fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido del Dashboard -->
+    <div class="row">
+        <!-- Gráfico de Licitaciones -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Licitaciones Recientes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Licitante</th>
+                                    <th>Estado</th>
+                                    <th>Ofertas</th>
+                                    <th>Mayor Oferta</th>
+                                    <th>Fecha Fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for licitacion in licitaciones_recientes %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('licitaciones.detail', id=licitacion.id) }}">
+                                            {{ licitacion.licitante_nombre }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if licitacion.estado == 'Abierta' 
+                                                           else 'warning' if licitacion.estado == 'En Proceso' 
+                                                           else 'danger' }}">
+                                            {{ licitacion.estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ licitacion.total_ofertas }}</td>
+                                    <td>${{ "{:,.2f}".format(licitacion.monto_mayor) }}</td>
+                                    <td>{{ licitacion.fecha_fin_formateada }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Estados -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Estado de Ofertas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <canvas id="ofertasEstadoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila de Actividad Reciente -->
+    <div class="row">
+        <!-- Ofertas Recientes -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Ofertas Recientes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for oferta in ofertas_recientes %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    <a href="{{ url_for('ofertas.detail', id=oferta.id) }}">
+                                        Oferta #{{ oferta.id }}
+                                    </a>
+                                </h6>
+                                <small>${{ "{:,.2f}".format(oferta.monto_ofrecido) }}</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ oferta.fecha_oferta }}</small>
+                                <span class="badge bg-{{ 'success' if oferta.estado == 'Aceptada' 
+                                                   else 'warning' if oferta.estado == 'Pendiente' 
+                                                   else 'danger' }}">
+                                    {{ oferta.estado }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Actividad -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Actividad por Estado</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="actividadChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+// Datos para los gráficos
+const chartData = {{ chart_data|tojson }};
+
+// Gráfico de Estado de Ofertas
+new Chart(document.getElementById('ofertasEstadoChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(chartData.ofertas_por_estado),
+        datasets: [{
+            data: Object.values(chartData.ofertas_por_estado),
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Gráfico de Actividad
+new Chart(document.getElementById('actividadChart'), {
+    type: 'bar',
+    data: {
+        labels: Object.keys(chartData.licitaciones_por_estado),
+        datasets: [{
+            label: 'Licitaciones',
+            data: Object.values(chartData.licitaciones_por_estado),
+            backgroundColor: '#4e73df'
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

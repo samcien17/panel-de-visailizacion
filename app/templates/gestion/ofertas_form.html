@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Oferta{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Nueva Oferta</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="licitacion_id" class="form-label">Licitación</label>
+                        <select class="form-select" id="licitacion_id" name="licitacion_id" required>
+                            <option value="">Seleccione una licitación...</option>
+                            {% for licitacion in licitaciones %}
+                            <option value="{{ licitacion.id }}">{{ licitacion.descripcion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="proveedor_id" class="form-label">Proveedor</label>
+                        <select class="form-select" id="proveedor_id" name="proveedor_id" required>
+                            <option value="">Seleccione un proveedor...</option>
+                            {% for proveedor in proveedores %}
+                            <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="monto" class="form-label">Monto Ofrecido</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="monto" name="monto" step="0.01" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{{ url_for('gestion.index') }}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

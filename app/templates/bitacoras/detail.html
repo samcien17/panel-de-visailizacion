@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Bitácora{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('bitacoras.index') }}">Bitácoras</a></li>
+                <li class="breadcrumb-item active">Bitácora #{{ bitacora.id }}</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h2 class="card-title mb-0">Detalle de Bitácora #{{ bitacora.id }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información de la Bitácora</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">ID:</dt>
+                            <dd class="col-sm-8">{{ bitacora.id }}</dd>
+                            
+                            <dt class="col-sm-4">Fecha:</dt>
+                            <dd class="col-sm-8">{{ bitacora.fecha_formateada }}</dd>
+                            
+                            <dt class="col-sm-4">Descripción:</dt>
+                            <dd class="col-sm-8">{{ bitacora.descripcion }}</dd>
+                        </dl>
+                    </div>
+                    
+                    {% if licitacion %}
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información de la Licitación</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">ID Licitación:</dt>
+                            <dd class="col-sm-8">
+                                <a href="{{ url_for('licitaciones.detail', id=licitacion.id) }}">
+                                    {{ licitacion.id }}
+                                </a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Descripción:</dt>
+                            <dd class="col-sm-8">{{ licitacion.descripcion }}</dd>
+                            
+                            <dt class="col-sm-4">Estado:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-{{ 'success' if licitacion.estado == 'Abierta' 
+                                                   else 'warning' if licitacion.estado == 'En Proceso' 
+                                                   else 'danger' }}">
+                                    {{ licitacion.estado }}
+                                </span>
+                            </dd>
+                        </dl>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('bitacoras.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver a la lista
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+Last edited just now

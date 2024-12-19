@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ licitante.nombre }} - Detalle de Licitante{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('licitantes.index') }}">Licitantes</a></li>
+                <li class="breadcrumb-item active">{{ licitante.nombre }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title mb-0">{{ licitante.nombre }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información de Contacto</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">ID:</dt>
+                            <dd class="col-sm-8">{{ licitante.id }}</dd>
+                            
+                            <dt class="col-sm-4">Correo:</dt>
+                            <dd class="col-sm-8">
+                                <a href="mailto:{{ licitante.correo }}" class="text-decoration-none">
+                                    {{ licitante.correo }}
+                                </a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8">
+                                <a href="tel:{{ licitante.telefono }}" class="text-decoration-none">
+                                    {{ licitante.telefono }}
+                                </a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Dirección:</dt>
+                            <dd class="col-sm-8">{{ licitante.direccion }}</dd>
+                            
+                            <dt class="col-sm-4">Fecha Registro:</dt>
+                            <dd class="col-sm-8">{{ licitante.fecha_formateada }}</dd>
+                        </dl>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body bg-light">
+                                <h5 class="card-subtitle mb-3">Acciones Rápidas</h5>
+                                <div class="d-grid gap-2">
+                                    <a href="mailto:{{ licitante.correo }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-envelope"></i> Enviar Correo
+                                    </a>
+                                    <a href="tel:{{ licitante.telefono }}" class="btn btn-outline-success">
+                                        <i class="bi bi-telephone"></i> Llamar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('licitantes.index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

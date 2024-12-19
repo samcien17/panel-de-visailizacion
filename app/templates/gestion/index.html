@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Gestión{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Panel de Gestión</h1>
+    
+    <!-- Solo para debug -->
+    <div class="mb-3">
+        <button id="btnSimple" class="btn btn-secondary">
+            Test Simple
+        </button>
+    </div>
+
+    <div class="mb-3">
+        <button id="btnNuevo" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Licitante
+        </button>
+    </div>
+
+    <!-- DIV Modal -->
+    <div id="modalForm" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); 
+                              background:white; padding:20px; border:1px solid #ccc; z-index:1000; width:80%; max-width:500px;">
+        <h3>Nuevo Licitante</h3>
+        <form id="formLicitante">
+            <div class="mb-3">
+                <label class="form-label">Nombre:</label>
+                <input type="text" class="form-control" name="nombre" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Correo:</label>
+                <input type="email" class="form-control" name="correo" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Teléfono:</label>
+                <input type="tel" class="form-control" name="telefono" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Dirección:</label>
+                <input type="text" class="form-control" name="direccion" required>
+            </div>
+            <div class="text-end">
+                <button type="button" onclick="hideModal()" class="btn btn-secondary me-2">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for licitante in licitantes %}
+            <tr>
+                <td>{{ licitante.id }}</td>
+                <td>{{ licitante.nombre }}</td>
+                <td>{{ licitante.correo }}</td>
+                <td>{{ licitante.telefono }}</td>
+                <td>{{ licitante.direccion }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Para debug
+console.log('Script iniciando...');
+
+// Funciones básicas
+function showModal() {
+    console.log('Mostrando modal...');
+    document.getElementById('modalForm').style.display = 'block';
+}
+
+function hideModal() {
+    console.log('Ocultando modal...');
+    document.getElementById('modalForm').style.display = 'none';
+}
+
+// Cuando el documento esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Cargado');
+
+    // Test simple
+    const btnSimple = document.getElementById('btnSimple');
+    btnSimple.addEventListener('click', function() {
+        console.log('Botón simple clickeado');
+        alert('¡Botón funciona!');
+    });
+
+    // Botón nuevo
+    const btnNuevo = document.getElementById('btnNuevo');
+    btnNuevo.addEventListener('click', function() {
+        console.log('Botón nuevo clickeado');
+        showModal();
+    });
+
+    // Formulario
+    const form = document.getElementById('formLicitante');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log('Formulario enviado');
+
+        // Recoger datos del formulario
+        const formData = new FormData(form);
+        const datos = {};
+        formData.forEach((value, key) => {
+            datos[key] = value;
+        });
+
+        console.log('Datos a enviar:', datos);
+
+        try {
+            const response = await fetch('/gestion/crear/licitante', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Respuesta:', data);
+
+            if (data.success) {
+                hideModal();
+                window.location.reload();
+            } else {
+                alert(data.message || 'Error al guardar');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al procesar la solicitud');
+        }
+    });
+});
+</script>
+{% endblock %}

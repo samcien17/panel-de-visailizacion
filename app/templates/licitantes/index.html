@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Licitantes{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1 class="mb-4">Licitantes</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for licitante in licitantes %}
+                    <tr>
+                        <td>{{ licitante.id }}</td>
+                        <td>{{ licitante.nombre }}</td>
+                        <td>
+                            <a href="mailto:{{ licitante.correo }}" class="text-decoration-none">
+                                {{ licitante.correo }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="tel:{{ licitante.telefono }}" class="text-decoration-none">
+                                {{ licitante.telefono }}
+                            </a>
+                        </td>
+                        <td>{{ licitante.fecha_formateada }}</td>
+                        <td>
+                            <a href="{{ url_for('licitantes.detail', id=licitante.id) }}" 
+                               class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

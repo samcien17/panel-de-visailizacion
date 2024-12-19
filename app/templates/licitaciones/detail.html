@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ licitacion.descripcion }} - Detalle de Licitación{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('licitaciones.index') }}">Licitaciones</a></li>
+                <li class="breadcrumb-item active">{{ licitacion.descripcion }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title mb-0">{{ licitacion.descripcion }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información de la Licitación</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">ID:</dt>
+                            <dd class="col-sm-8">{{ licitacion.id }}</dd>
+                            
+                            <dt class="col-sm-4">Estado:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-{{ 'success' if licitacion.estado == 'Abierta' 
+                                                   else 'warning' if licitacion.estado == 'En Proceso' 
+                                                   else 'danger' }}">
+                                    {{ licitacion.estado }}
+                                </span>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Inicio:</dt>
+                            <dd class="col-sm-8">{{ licitacion.fecha_inicio_formateada }}</dd>
+                            
+                            <dt class="col-sm-4">Fin:</dt>
+                            <dd class="col-sm-8">{{ licitacion.fecha_fin_formateada }}</dd>
+                        </dl>
+                    </div>
+                    
+                    {% if licitante %}
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información del Licitante</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Nombre:</dt>
+                            <dd class="col-sm-8">{{ licitante.nombre }}</dd>
+                            
+                            <dt class="col-sm-4">Correo:</dt>
+                            <dd class="col-sm-8">
+                                <a href="mailto:{{ licitante.correo }}">{{ licitante.correo }}</a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8">
+                                <a href="tel:{{ licitante.telefono }}">{{ licitante.telefono }}</a>
+                            </dd>
+                        </dl>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col">
+                        <h5 class="card-subtitle mb-3">Descripción</h5>
+                        <p>{{ licitacion.descripcion }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección de Ofertas -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">Ofertas Recibidas</h3>
+                <span class="badge bg-primary">{{ ofertas|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if ofertas %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Proveedor</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for oferta in ofertas %}
+                                <tr>
+                                    <td>{{ oferta.id }}</td>
+                                    <td>{{ oferta.proveedor_id }}</td>
+                                    <td>${{ "{:,.2f}".format(oferta.monto_ofrecido) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if oferta.estado == 'Aceptada' 
+                                                           else 'warning' if oferta.estado == 'Pendiente' 
+                                                           else 'danger' }}">
+                                            {{ oferta.estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ oferta.fecha_oferta }}</td>
+                                    <td>
+                                        <a href="{{ url_for('ofertas.detail', id=oferta.id) }}" 
+                                           class="btn btn-sm btn-info">Ver</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        Aún no se han recibido ofertas para esta licitación.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Sección de Bitácoras -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Bitácora de Eventos</h3>
+            </div>
+            <div class="card-body">
+                {% if bitacoras %}
+                    <div class="list-group">
+                        {% for bitacora in bitacoras %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ bitacora.evento }}</h5>
+                                <small>{{ bitacora.fecha }}</small>
+                            </div>
+                            <p class="mb-1">{{ bitacora.descripcion }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        No hay eventos registrados en la bitácora.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('licitaciones.index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+Last edited just now

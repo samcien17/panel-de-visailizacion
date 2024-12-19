@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Licitación{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Nueva Licitación</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="licitante_id" class="form-label">Licitante</label>
+                        <select class="form-select" id="licitante_id" name="licitante_id" required>
+                            <option value="">Seleccione un licitante...</option>
+                            {% for licitante in licitantes %}
+                            <option value="{{ licitante.id }}">{{ licitante.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha_fin" class="form-label">Fecha de Cierre</label>
+                        <input type="datetime-local" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{{ url_for('gestion.index') }}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

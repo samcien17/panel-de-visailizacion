@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Ofertas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1>Ofertas</h1>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Proveedor</th>
+                        <th>Licitación</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oferta in ofertas %}
+                    <tr>
+                        <td>{{ oferta.id }}</td>
+                        <td>{{ oferta.proveedor_nombre }}</td>
+                        <td>{{ oferta.licitacion_titulo }}</td>
+                        <td>${{ "{:,.2f}".format(oferta.monto_ofrecido) }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if oferta.estado == 'Aceptada' 
+                                               else 'warning' if oferta.estado == 'Pendiente' 
+                                               else 'danger' }}">
+                                {{ oferta.estado }}
+                            </span>
+                        </td>
+                        <td>{{ oferta.fecha_formateada }}</td>
+                        <td>
+                            <a href="{{ url_for('ofertas.detail', id=oferta.id) }}" 
+                               class="btn btn-sm btn-info">Ver</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

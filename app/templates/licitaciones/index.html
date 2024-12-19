@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Licitaciones{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1 class="mb-4">Licitaciones</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Licitante</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Ofertas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for licitacion in licitaciones %}
+                    <tr>
+                        <td>{{ licitacion.id }}</td>
+                        <td>{{ licitacion.licitante_nombre }}</td>
+                        <td>{{ licitacion.descripcion }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if licitacion.estado == 'Abierta' 
+                                               else 'warning' if licitacion.estado == 'En Proceso' 
+                                               else 'danger' }}">
+                                {{ licitacion.estado }}
+                            </span>
+                        </td>
+                        <td>{{ licitacion.fecha_inicio_formateada }}</td>
+                        <td>{{ licitacion.fecha_fin_formateada }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ licitacion.total_ofertas }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('licitaciones.detail', id=licitacion.id) }}" 
+                               class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

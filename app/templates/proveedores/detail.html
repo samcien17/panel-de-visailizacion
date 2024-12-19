@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ proveedor.nombre }} - Detalle de Proveedor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('proveedores.index') }}">Proveedores</a></li>
+                <li class="breadcrumb-item active">{{ proveedor.nombre }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title mb-0">{{ proveedor.nombre }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="card-subtitle mb-3">Información de Contacto</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">ID:</dt>
+                            <dd class="col-sm-8">{{ proveedor.id }}</dd>
+                            
+                            <dt class="col-sm-4">Correo:</dt>
+                            <dd class="col-sm-8">
+                                <a href="mailto:{{ proveedor.correo }}" class="text-decoration-none">
+                                    {{ proveedor.correo }}
+                                </a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8">
+                                <a href="tel:{{ proveedor.telefono }}" class="text-decoration-none">
+                                    {{ proveedor.telefono }}
+                                </a>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Fecha Registro:</dt>
+                            <dd class="col-sm-8">{{ proveedor.fecha_formateada }}</dd>
+                        </dl>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body bg-light">
+                                <h5 class="card-subtitle mb-3">Acciones Rápidas</h5>
+                                <div class="d-grid gap-2">
+                                    <a href="mailto:{{ proveedor.correo }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-envelope"></i> Enviar Correo
+                                    </a>
+                                    <a href="tel:{{ proveedor.telefono }}" class="btn btn-outline-success">
+                                        <i class="bi bi-telephone"></i> Llamar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección de Ofertas -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Ofertas Realizadas</h3>
+            </div>
+            <div class="card-body">
+                {% if ofertas %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for oferta in ofertas %}
+                                <tr>
+                                    <td>{{ oferta.id }}</td>
+                                    <td>${{ "{:,.2f}".format(oferta.monto_ofrecido) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if oferta.estado == 'Aceptada' 
+                                                           else 'warning' if oferta.estado == 'Pendiente' 
+                                                           else 'danger' }}">
+                                            {{ oferta.estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ oferta.fecha_oferta }}</td>
+                                    <td>
+                                        <a href="{{ url_for('ofertas.detail', id=oferta.id) }}" 
+                                           class="btn btn-sm btn-info">Ver</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        Este proveedor aún no ha realizado ofertas.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('proveedores.index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

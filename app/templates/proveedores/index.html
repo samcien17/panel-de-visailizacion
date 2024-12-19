@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Proveedores{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1 class="mb-4">Proveedores</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Fecha Registro</th>
+                        <th>Total Ofertas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proveedor in proveedores %}
+                    <tr>
+                        <td>{{ proveedor.id }}</td>
+                        <td>{{ proveedor.nombre }}</td>
+                        <td>
+                            <a href="mailto:{{ proveedor.correo }}" class="text-decoration-none">
+                                {{ proveedor.correo }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="tel:{{ proveedor.telefono }}" class="text-decoration-none">
+                                {{ proveedor.telefono }}
+                            </a>
+                        </td>
+                        <td>{{ proveedor.fecha_formateada }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ proveedor.total_ofertas }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('proveedores.detail', id=proveedor.id) }}" 
+                               class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
